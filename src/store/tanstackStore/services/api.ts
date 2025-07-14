@@ -96,4 +96,33 @@ export const logoutStudentService = async () => {
     } catch (error) {
         errorHandling(error);
     }
+};
+
+/* ********** STUDENT STATUS, PROPOSAL, AND BOOK SERVICES ********** */
+
+export const getStudentStatusesService = async (studentId: string) => {
+    try {
+        const response = await apiRequest.get(`/student/statuses/${studentId}`);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentProposalsService = async (studentId: string) => {
+    try {
+        const response = await apiRequest.get(`/student/proposals/${studentId}`);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentBooksService = async (studentId: string) => {
+    try {
+        const response = await apiRequest.get(`/student/books/${studentId}`);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
 }; 

@@ -28,6 +28,7 @@ import {
 import MyProfileProgressStatusTable from "./MyProfileProgressStatusTable";
 import MyProfileProgressProposalTable from "./MyProfileProgressProposalTable";
 import MyProfileProgressBookTable from "./MyProfileProgressBookTable";
+import { useGetStudentStatuses, useGetStudentProposals, useGetStudentBooks } from "../../store/tanstackStore/services/queries";
 
 const MyProfileProgressPage = ({ studentData }) => {
   const [activeView, setActiveView] = useState("tracker");
@@ -53,9 +54,25 @@ const MyProfileProgressPage = ({ studentData }) => {
     );
   }
 
+  // Use the query hooks like in StudentProfileProgressPage
+  const {
+    data: studentStatuses,
+    isLoading: isLoadingStudentStatuses,
+  } = useGetStudentStatuses(student.id);
+
+  const { data: proposals, isLoading: isLoadingProposals } = useGetStudentProposals(student.id);
+
+  const { data: books, isLoading: isLoadingBooks } = useGetStudentBooks(student.id);
+
   const currentStatus = useMemo(
-    () => student?.statuses?.find((s) => s.isCurrent),
-    [student?.statuses]
+    () => {
+      if (!studentStatuses?.statuses || studentStatuses.statuses.length === 0) {
+        return null;
+      }
+      // In descending order, the first status is the latest/most recent
+      return studentStatuses.statuses[0];
+    },
+    [studentStatuses?.statuses]
   );
 
   const currentSupervisor = useMemo(
@@ -103,10 +120,12 @@ const MyProfileProgressPage = ({ studentData }) => {
   const renderTimelineBar = useCallback(
     (status, index) => {
       const startDate = new Date(status.startDate);
-      const endDate =
-        index < student.statuses.length - 1
-          ? new Date(student.statuses[index + 1].startDate)
-          : new Date();
+      // For timeline display (reversed array): first status is oldest, last status is latest
+      const reversedStatuses = studentStatuses?.statuses?.slice().reverse() || [];
+      const isLatest = index === (reversedStatuses.length || 0) - 1;
+      const endDate = isLatest
+        ? new Date() // Latest status ends at present
+        : new Date(reversedStatuses[index + 1]?.startDate); // Next status start date
       const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
       const position = Math.ceil(
         (startDate - enrollmentDate) / (1000 * 60 * 60 * 24)
@@ -135,11 +154,9 @@ const MyProfileProgressPage = ({ studentData }) => {
                 </div>
                 <div className="text-sm text-gray-600">
                   {new Date(status?.startDate).toLocaleDateString()} -{" "}
-                  {index < student?.statuses?.length - 1
-                    ? new Date(
-                        student?.statuses[index + 1]?.startDate
-                      ).toLocaleDateString()
-                    : "Present"}
+                  {isLatest
+                    ? "Present"
+                    : new Date(reversedStatuses[index + 1]?.startDate).toLocaleDateString()}
                 </div>
                 <div className="text-xs font-[Inter-Regular] text-gray-900">
                   Actual Duration: {duration} days
@@ -161,16 +178,17 @@ const MyProfileProgressPage = ({ studentData }) => {
         </TooltipProvider>
       );
     },
-    [enrollmentDate, student?.statuses?.length]
+    [enrollmentDate, studentStatuses?.statuses?.length]
   );
 
   const renderTimelineLegend = useCallback(
     (status) => {
       // Check if this status definition has already been rendered
+      const reversedStatuses = studentStatuses?.statuses?.slice().reverse() || [];
       const isFirstOccurrence =
-        student.statuses.findIndex(
+        reversedStatuses.findIndex(
           (s) => s.definition?.name === status.definition?.name
-        ) === student.statuses.indexOf(status);
+        ) === reversedStatuses.indexOf(status);
 
       if (!isFirstOccurrence) return null;
 
@@ -191,7 +209,7 @@ const MyProfileProgressPage = ({ studentData }) => {
         </div>
       );
     },
-    [student?.statuses]
+    [studentStatuses?.statuses]
   );
 
   const handleViewSupervisor = (supervisor) => {
@@ -254,6 +272,10 @@ const MyProfileProgressPage = ({ studentData }) => {
     columns: supervisorColumns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (isLoadingStudentStatuses) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6 ">
@@ -376,14 +398,14 @@ const MyProfileProgressPage = ({ studentData }) => {
           {/* Timeline Progress Bar */}
           <div className="space-y-2">
             <div className="relative h-8 bg-white shadow-md flex gap-1">
-              {student.statuses?.map((status, index) =>
+              {studentStatuses?.statuses?.slice().reverse().map((status, index) =>
                 renderTimelineBar(status, index)
               )}
             </div>
           </div>
           {/* Timeline Legend */}
           <div className="flex flex-wrap items-center gap-3 mt-4 p-3 bg-white rounded-lg shadow-sm">
-            {student.statuses?.map(renderTimelineLegend)}
+            {studentStatuses?.statuses?.slice().reverse().map(renderTimelineLegend)}
           </div>
         </div>
       </div>
@@ -484,8 +506,8 @@ const MyProfileProgressPage = ({ studentData }) => {
         {activeView === "tracker" && (
           <div className="px-4">
             <MyProfileProgressStatusTable
-              statuses={student.statuses || []}
-              isLoading={false}
+              statuses={studentStatuses?.statuses || []}
+              isLoading={isLoadingStudentStatuses}
             />
           </div>
         )}
@@ -494,8 +516,8 @@ const MyProfileProgressPage = ({ studentData }) => {
         {activeView === "proposal" && (
           <div className="px-4">
             <MyProfileProgressProposalTable
-              proposals={student.proposals || []}
-              isLoading={false}
+              proposals={proposals?.proposals || []}
+              isLoading={isLoadingProposals}
             />
           </div>
         )}
@@ -504,8 +526,8 @@ const MyProfileProgressPage = ({ studentData }) => {
         {activeView === "book" && (
           <div className="px-4">
             <MyProfileProgressBookTable
-              books={student.books || []}
-              isLoading={false}
+              books={books?.books || []}
+              isLoading={isLoadingBooks}
             />
           </div>
         )}

@@ -88,15 +88,8 @@ const MyProfile = () => {
         <div className="bg-white p-4 rounded-[10px] shadow-md">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="inline-flex items-center px-4 py-2 bg-[#23388F] text-white rounded-[6px] gap-2 hover:bg-blue-600"
-              >
-                <ArrowLeft className="w-5 h-5" /> 
-                Back
-              </button>
-              <span className="text-lg font-[Inter-SemiBold] capitalize text-gray-900">
-                {studentData?.student?.firstName} {studentData?.student?.lastName}
+              <span className="text-lg font-[Inter-SemiBold] text-gray-900">
+                Reg. Number: {studentData?.student?.registrationNumber || "N/A"}
               </span>
             </div>
             <div className="flex items-center gap-4">

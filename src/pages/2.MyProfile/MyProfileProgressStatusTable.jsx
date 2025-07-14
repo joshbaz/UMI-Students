@@ -44,15 +44,15 @@ const MyProfileProgressStatusTable = ({ statuses = [], isLoading }) => {
       cell: (info) => {
         const status = info.row.original;
         const statusIndex = statuses.findIndex(s => s.id === status.id);
-        const endDate = statusIndex < statuses.length - 1
-          ? new Date(statuses[statusIndex + 1].startDate)
-          : new Date();
+        // For descending order: first status (index 0) is latest/most recent
+        const isLatest = statusIndex === 0;
+        const endDate = isLatest
+          ? new Date() // Latest status ends at present
+          : new Date(statuses[statusIndex - 1].startDate); // Previous status start date
         
         return (
           <span className="text-sm font-[Inter-Regular] text-gray-900">
-            {statusIndex < statuses.length - 1
-              ? endDate.toLocaleDateString()
-              : "Present"}
+            {isLatest ? "Present" : endDate.toLocaleDateString()}
           </span>
         );
       },
@@ -63,9 +63,10 @@ const MyProfileProgressStatusTable = ({ statuses = [], isLoading }) => {
         const status = info.row.original;
         const statusIndex = statuses.findIndex(s => s.id === status.id);
         const startDate = new Date(status.startDate);
-        const endDate = statusIndex < statuses.length - 1
-          ? new Date(statuses[statusIndex + 1].startDate)
-          : new Date();
+        const isLatest = statusIndex === 0;
+        const endDate = isLatest
+          ? new Date() // Latest status ends at present
+          : new Date(statuses[statusIndex - 1].startDate); // Previous status start date
         const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
         
         return (
@@ -81,14 +82,15 @@ const MyProfileProgressStatusTable = ({ statuses = [], isLoading }) => {
         const status = info.row.original;
         const statusIndex = statuses.findIndex(s => s.id === status.id);
         const startDate = new Date(status.startDate);
-        const endDate = statusIndex < statuses.length - 1
-          ? new Date(statuses[statusIndex + 1].startDate)
-          : new Date();
+        const isLatest = statusIndex === 0;
+        const endDate = isLatest
+          ? new Date() // Latest status ends at present
+          : new Date(statuses[statusIndex - 1].startDate); // Previous status start date
         const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
         const isOverdue = status.definition?.expectedDuration && duration > status.definition.expectedDuration;
         
         return (
-          <span className={`text-sm font-[Inter-Regular] ${isOverdue ? 'text-red-500' : 'text-green-500'}`}>
+          <span className={`text-sm font-[Inter-Regular] ${isOverdue ? 'text-red-500' : 'text-green-900'}`}>
             {isOverdue 
               ? `Overdue by ${duration - status.definition.expectedDuration} days`
               : "On track"

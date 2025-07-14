@@ -9,7 +9,10 @@ import {
   getStudentDashboardStatsService, 
   getStudentNotificationsService, 
   markStudentNotificationAsReadService, 
-  logoutStudentService 
+  logoutStudentService,
+  getStudentStatusesService,
+  getStudentProposalsService,
+  getStudentBooksService
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -45,6 +48,32 @@ export const useGetStudentNotifications = () => {
     queryKey: ['studentNotifications'],
     queryFn: getStudentNotificationsService,
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+/* ********** STUDENT STATUS, PROPOSAL, AND BOOK QUERIES ********** */
+
+export const useGetStudentStatuses = (studentId: string) => {
+  return useQuery({
+    queryKey: ['studentStatuses', studentId],
+    queryFn: () => getStudentStatusesService(studentId),
+    enabled: !!studentId,
+  });
+};
+
+export const useGetStudentProposals = (studentId: string) => {
+  return useQuery({
+    queryKey: ['studentProposals', studentId],
+    queryFn: () => getStudentProposalsService(studentId),
+    enabled: !!studentId,
+  });
+};
+
+export const useGetStudentBooks = (studentId: string) => {
+  return useQuery({
+    queryKey: ['studentBooks', studentId],
+    queryFn: () => getStudentBooksService(studentId),
+    enabled: !!studentId,
   });
 };
 
