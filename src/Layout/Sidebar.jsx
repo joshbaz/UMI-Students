@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const mainNavItems = [
   { name: 'Dashboard', path: '/dashboard', icon: 'mdi:view-dashboard', color: 'text-[#23398B]' },
   { name: 'My Profile', path: '/profile', icon: 'mdi:account', color: 'text-gray-400' },
-  { name: 'Progress', path: '/progress', icon: 'mdi:calendar-check', color: 'text-gray-400' },
+  { name: 'Research Requests', path: '/requests', icon: 'mdi:calendar-check', color: 'text-gray-400' },
   { name: 'Direct Messages', path: '/direct-messages', icon: 'mdi:message-text', color: 'text-gray-400', badge: 20 },
 ];
 const otherNavItems = [
