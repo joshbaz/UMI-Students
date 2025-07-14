@@ -10,7 +10,8 @@ import Notifications from "./pages/5.Notifications/Notifications";
 import Settings from "./pages/6.Settings/Settings";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OrdinaryRoutes from "./routes/OrdinaryRoutes";
-import StudentRequests from "./pages/3.StudentRequests/StudentRequests";
+import ResearchRequests from "./pages/3.ResearchRequests/ResearchRequests";
+import SubmitResearchRequest from "./pages/3.ResearchRequests/SubmitResearchRequest";
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<MyProfile />} />
-          <Route path="/requests" element={<StudentRequests />} />
+          <Route path="/requests" element={<ResearchRequests />} />
+          <Route path="/requests/submit" element={<SubmitResearchRequest />} />
           <Route path="/direct-messages" element={<DirectMessages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />

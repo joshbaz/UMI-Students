@@ -12,7 +12,9 @@ import {
   logoutStudentService,
   getStudentStatusesService,
   getStudentProposalsService,
-  getStudentBooksService
+  getStudentBooksService,
+  getStudentResearchRequestsService,
+  createStudentResearchRequestService,
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -150,6 +152,29 @@ export const useLogoutStudentMutation = () => {
     },
     onError: (error) => {
       console.error('Student logout failed:', error);
+    },
+  });
+}; 
+
+// --- RESEARCH REQUESTS ---
+
+export const useGetStudentResearchRequests = () => {
+  return useQuery({
+    queryKey: ['studentResearchRequests'],
+    queryFn: getStudentResearchRequestsService,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+export const useCreateStudentResearchRequest = () => {
+  return useMutation({
+    mutationFn: createStudentResearchRequestService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['studentResearchRequests'] });
+    },
+    onError: (error) => {
+      // Optionally handle error
+      console.error('Failed to create research request:', error);
     },
   });
 }; 

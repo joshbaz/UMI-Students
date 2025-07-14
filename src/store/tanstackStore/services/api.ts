@@ -125,4 +125,24 @@ export const getStudentBooksService = async (studentId: string) => {
     } catch (error) {
         errorHandling(error);
     }
+};
+
+// ********** RESEARCH REQUESTS **********
+
+export const getStudentResearchRequestsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/research-requests");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const createStudentResearchRequestService = async (data: any) => {
+    try {
+        const response = await apiRequest.post("/student/research-requests", data);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
 }; 
