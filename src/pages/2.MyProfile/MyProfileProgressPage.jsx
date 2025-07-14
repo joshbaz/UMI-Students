@@ -25,6 +25,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import MyProfileProgressStatusTable from "./MyProfileProgressStatusTable";
+import MyProfileProgressProposalTable from "./MyProfileProgressProposalTable";
+import MyProfileProgressBookTable from "./MyProfileProgressBookTable";
 
 const MyProfileProgressPage = ({ studentData }) => {
   const [activeView, setActiveView] = useState("tracker");
@@ -39,6 +42,8 @@ const MyProfileProgressPage = ({ studentData }) => {
   const navigate = useNavigate();
 
   const student = studentData?.student;
+
+  console.log(student)
 
   if (!student) {
     return (
@@ -478,194 +483,30 @@ const MyProfileProgressPage = ({ studentData }) => {
         {/* Status Tracker Table */}
         {activeView === "tracker" && (
           <div className="px-4">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Start Date
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      End Date
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Duration
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Expected Days
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {student.statuses?.map((status, index) => {
-                    const startDate = new Date(status.startDate);
-                    const endDate = index < student.statuses.length - 1
-                      ? new Date(student.statuses[index + 1].startDate)
-                      : new Date();
-                    const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                    const isOverdue = status.definition?.expectedDays && duration > status.definition.expectedDays;
-                    
-                    return (
-                      <tr key={status.id} className="border-b hover:bg-gray-50">
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          <span
-                            style={{
-                              color: status.definition?.color || "#6B7280",
-                              backgroundColor: `${status.definition?.color}18` || "#F3F4F6",
-                              border: `1px solid ${status.definition?.color || "#6B7280"}`,
-                            }}
-                            className="inline-flex px-2 py-0.5 rounded-[4px] text-xs font-[Inter-Regular] capitalize"
-                          >
-                            {status.definition?.name || "Unknown"}
-                          </span>
-                        </td>
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          {startDate.toLocaleDateString()}
-                        </td>
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          {index < student.statuses.length - 1
-                            ? endDate.toLocaleDateString()
-                            : "Present"}
-                        </td>
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          {duration} days
-                        </td>
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          {status.definition?.expectedDays || "N/A"}
-                        </td>
-                        <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                          {isOverdue ? (
-                            <span className="text-red-500">
-                              Overdue by {duration - status.definition.expectedDays} days
-                            </span>
-                          ) : (
-                            <span className="text-green-500">On track</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <MyProfileProgressStatusTable
+              statuses={student.statuses || []}
+              isLoading={false}
+            />
           </div>
         )}
 
         {/* Proposal Table */}
         {activeView === "proposal" && (
           <div className="px-4">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Title
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Submitted Date
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Main Supervisor
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Co-Supervisor
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Defenses
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {student.proposals?.map((proposal, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.title}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.status || "Pending"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.createdAt ? new Date(proposal.createdAt).toLocaleDateString() : "Not available"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.mainSupervisor ? `${proposal.mainSupervisor.firstName} ${proposal.mainSupervisor.lastName}` : "Not assigned"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.coSupervisor ? `${proposal.coSupervisor.firstName} ${proposal.coSupervisor.lastName}` : "Not assigned"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {proposal.defenses?.length || 0} defense(s)
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <MyProfileProgressProposalTable
+              proposals={student.proposals || []}
+              isLoading={false}
+            />
           </div>
         )}
 
         {/* Book Table */}
         {activeView === "book" && (
           <div className="px-4">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Title
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Submitted Date
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Examiners
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Vivas
-                    </th>
-                    <th className="text-left py-3 px-3 text-sm font-[Inter-Medium] text-gray-500 border-b">
-                      Average Mark
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {student.books?.map((book, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.title}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.status || "In Progress"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.createdAt ? new Date(book.createdAt).toLocaleDateString() : "Not available"}
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.examinerAssignments?.length || 0} examiner(s)
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.vivaHistory?.length || 0} viva(s)
-                      </td>
-                      <td className="py-2 px-3 text-sm font-[Inter-Regular] text-gray-900">
-                        {book.averageExamMark || "Not graded"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <MyProfileProgressBookTable
+              books={student.books || []}
+              isLoading={false}
+            />
           </div>
         )}
       </div>
