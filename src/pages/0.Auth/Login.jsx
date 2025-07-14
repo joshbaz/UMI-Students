@@ -4,12 +4,16 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router-dom'
+import { useLoginStudentMutation } from '../../store/tanstackStore/services/queries'
 
 // Login Component
 const Login = ({ setIsAuthenticated }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [fieldError, setFieldError] = useState({ email: '', password: '' })
   const navigate = useNavigate()
+  
+  // Use the login mutation
+  const loginMutation = useLoginStudentMutation()
 
   return (
     // Page Container
@@ -31,25 +35,42 @@ const Login = ({ setIsAuthenticated }) => {
           })}
           validateOnChange={true}
           validateOnBlur={true}
-          onSubmit={(values, { setSubmitting, setStatus, setFieldError }) => {
+          onSubmit={async (values, { setSubmitting, setStatus, setFieldError }) => {
             setFieldError('email', '')
             setFieldError('password', '')
             setStatus('')
-            setTimeout(() => {
-              // Simulate login error for demo
-              setFieldError('email', '')
-              setFieldError('password', '')
-              setStatus('')
-              if (values.email !== 'josh@gmail.com' || values.password !== 'password123') {
-                setFieldError('email', values.email !== 'josh@gmail.com' ? 'Incorrect username or password. Please try again.' : '')
-                setFieldError('password', values.password !== 'password123' ? 'Incorrect username or password. Please try again.' : '')
-                setSubmitting(false)
-                return
-              }
+            
+            try {
+              const result = await loginMutation.mutateAsync({
+                email: values.email,
+                password: values.password,
+                rememberMe: values.remember
+              })
+              
               setSubmitting(false)
               setIsAuthenticated(true)
               navigate('/dashboard')
-            }, 1200)
+              
+            } catch (error) {
+              setSubmitting(false)
+              console.error('Login failed:', error)
+              
+              // Handle different types of errors
+              if (error.message) {
+                if (error.message.includes('Student not found') || error.message.includes('Invalid password')) {
+                  setFieldError('email', 'Incorrect username or password. Please try again.')
+                  setFieldError('password', 'Incorrect username or password. Please try again.')
+                } else if (error.message.includes('deactivated')) {
+                  setFieldError('email', 'Your account has been deactivated. Please contact the administrator.')
+                } else if (error.message.includes('Unauthorized access')) {
+                  setFieldError('email', 'Unauthorized access. Please contact the administrator.')
+                } else {
+                  setFieldError('email', error.message)
+                }
+              } else {
+                setFieldError('email', 'An unexpected error occurred. Please try again.')
+              }
+            }
           }}
         >
           {({ isSubmitting, setFieldValue, values, errors, touched }) => (
@@ -114,16 +135,16 @@ const Login = ({ setIsAuthenticated }) => {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || loginMutation.isPending}
                 className="w-full bg-[#23408e] text-white rounded-md py-2 text-lg font-medium mt-2 hover:bg-[#1a2e5c] transition-colors disabled:opacity-60 flex items-center justify-center"
               >
-                {isSubmitting && (
+                {(isSubmitting || loginMutation.isPending) && (
                   <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                   </svg>
                 )}
-                {isSubmitting ? 'Signing In...' : 'Sign In'}
+                {(isSubmitting || loginMutation.isPending) ? 'Signing In...' : 'Sign In'}
               </button>
             </Form>
           )}
