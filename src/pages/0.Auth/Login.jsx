@@ -1,16 +1,18 @@
 // UMI Login Page
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router-dom'
 import { useLoginStudentMutation } from '../../store/tanstackStore/services/queries'
+import { AuthContext } from '../../store/context/AuthContext'
 
 // Login Component
-const Login = ({ setIsAuthenticated }) => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [fieldError, setFieldError] = useState({ email: '', password: '' })
   const navigate = useNavigate()
+  const { updateUser } = useContext(AuthContext)
   
   // Use the login mutation
   const loginMutation = useLoginStudentMutation()
@@ -48,7 +50,7 @@ const Login = ({ setIsAuthenticated }) => {
               })
               
               setSubmitting(false)
-              setIsAuthenticated(true)
+              updateUser(result)
               navigate('/dashboard')
               
             } catch (error) {

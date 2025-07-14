@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./Layout/Layout";
 import Login from "./pages/0.Auth/Login";
@@ -8,24 +8,22 @@ import Progress from "./pages/3.Progress/Progress";
 import DirectMessages from "./pages/4.DirectMessages/DirectMessages";
 import Notifications from "./pages/5.Notifications/Notifications";
 import Settings from "./pages/6.Settings/Settings";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import OrdinaryRoutes from "./routes/OrdinaryRoutes";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   return (
     <Router>
       <Routes>
         <Route
           path="/"
           element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Login setIsAuthenticated={setIsAuthenticated} />
-            )
+            <ProtectedRoutes>
+              <Layout />
+            </ProtectedRoutes>
           }
-        />
-        <Route element={<Layout setIsAuthenticated={setIsAuthenticated} />}> {/* Protected routes */}
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<MyProfile />} />
           <Route path="/progress" element={<Progress />} />
@@ -33,6 +31,11 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
+        
+        <Route element={<OrdinaryRoutes />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+        
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

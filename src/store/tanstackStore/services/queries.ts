@@ -2,6 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../../utils/tanstack';
 import { 
   loginStudentService, 
+  getLoggedInUserService,
   getStudentProfileService, 
   updateStudentProfileService, 
   changeStudentPasswordService, 
@@ -12,6 +13,15 @@ import {
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
+
+export const useGetLoggedInUser = () => {
+  return useQuery({
+    queryKey: ['loggedInUser'],
+    queryFn: getLoggedInUserService,
+    staleTime: Infinity,
+    refetchInterval: false,
+  });
+};
 
 export const useGetStudentProfile = () => {
   return useQuery({
@@ -26,17 +36,15 @@ export const useGetStudentDashboardStats = () => {
   return useQuery({
     queryKey: ['studentDashboardStats'],
     queryFn: getStudentDashboardStatsService,
-    staleTime: Infinity,
-    refetchInterval: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
-export const useGetStudentNotifications = (page = 1, limit = 20) => {
+export const useGetStudentNotifications = () => {
   return useQuery({
-    queryKey: ['studentNotifications', page, limit],
-    queryFn: () => getStudentNotificationsService(page, limit),
-    staleTime: Infinity,
-    refetchInterval: false,
+    queryKey: ['studentNotifications'],
+    queryFn: getStudentNotificationsService,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
 
@@ -48,8 +56,9 @@ export const useLoginStudentMutation = () => {
     onSuccess: (data) => {
       // Store token and user data
       if (data.token) {
+        localStorage.setItem('umi_student_auth_token', data.token);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.user.role);
+        localStorage.setItem('role', data.user?.role || 'student');
       }
       console.log('Student login successful:', data);
     },
@@ -64,7 +73,7 @@ export const useUpdateStudentProfileMutation = () => {
   return useMutation({
     mutationFn: updateStudentProfileService,
     onSuccess: (data) => {
-      // Invalidate and refetch student profile
+      // Invalidate and refetch profile data
       queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
       console.log('Student profile updated successfully:', data);
     },
@@ -92,7 +101,7 @@ export const useMarkStudentNotificationAsReadMutation = () => {
     onSuccess: (data) => {
       // Invalidate and refetch notifications
       queryClient.invalidateQueries({ queryKey: ['studentNotifications'] });
-      console.log('Notification marked as read:', data);
+      console.log('Student notification marked as read:', data);
     },
     onError: (error) => {
       console.error('Failed to mark notification as read:', error);
@@ -107,6 +116,7 @@ export const useLogoutStudentMutation = () => {
       // Clear stored authentication data
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      localStorage.removeItem('umi_student_auth_token');
       console.log('Student logout successful:', data);
     },
     onError: (error) => {

@@ -26,6 +26,15 @@ export const loginStudentService = async (user: any) => {
     }
 };
 
+export const getLoggedInUserService = async () => {
+    try {
+        const response = await apiRequest.get("/student/logged-in-user");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
 export const getStudentProfileService = async () => {
     try {
         const response = await apiRequest.get("/student/profile");
@@ -62,9 +71,9 @@ export const getStudentDashboardStatsService = async () => {
     }
 };
 
-export const getStudentNotificationsService = async (page = 1, limit = 20) => {
+export const getStudentNotificationsService = async () => {
     try {
-        const response = await apiRequest.get(`/student/notifications?page=${page}&limit=${limit}`);
+        const response = await apiRequest.get("/student/notifications");
         return response.data;
     } catch (error) {
         errorHandling(error);

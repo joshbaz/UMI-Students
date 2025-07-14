@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { AuthContext } from '../store/context/AuthContext';
+import { useGetLoggedInUser } from '../store/tanstackStore/services/queries';
+import { useQueryClient } from '@tanstack/react-query';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mainNavItems = [
   { name: 'Dashboard', path: '/dashboard', icon: 'mdi:view-dashboard', color: 'text-[#23398B]' },
@@ -13,14 +17,20 @@ const otherNavItems = [
   { name: 'Settings', path: '/settings', icon: 'mdi:cog', color: 'text-gray-400' },
 ];
 
-const Sidebar = ({ setIsAuthenticated }) => {
+const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+  const { data: userData } = useGetLoggedInUser();
+  const queryClient = useQueryClient();
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    navigate('/');
-  };
+  console.log(userData)
+  const handleLogout = useCallback(() => {
+    logout();
+    // Reset all queries in the query client
+    queryClient.clear(); // This clears all queries from the cache
+    navigate('/login', { replace: true });
+  }, [logout, navigate, queryClient]);
 
   return (
     <aside className="w-56 bg-white shadow-md flex flex-col min-h-screen h-screen overflow-y-auto">
@@ -32,9 +42,22 @@ const Sidebar = ({ setIsAuthenticated }) => {
       </div>
       {/* User Info */}
       <div className="flex items-center gap-3 px-4 py-3 border-y border-[#E5E7EB]">
-        <img src="/avatar.jpg" alt="User avatar" className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+        <Avatar>
+          <AvatarImage
+            src={userData?.user?.profile_image}
+            alt="profile"
+          />
+          <AvatarFallback>
+            {userData?.user?.name?.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col items-start">
-          <span className="font-semibold text-gray-800 text-xs leading-tight">Joshua Kimbareeba</span>
+          <span className="font-semibold text-gray-800 text-xs leading-tight">
+            {userData?.user?.name || 'Student'}
+          </span>
+          <span className="text-xs text-gray-500">
+            {userData?.user?.studentId || 'Student ID'}
+          </span>
         </div>
       </div>
       {/* Main Activities */}
