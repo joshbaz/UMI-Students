@@ -141,6 +141,16 @@ export const getStudentResearchRequestsService = async () => {
 export const createStudentResearchRequestService = async (data: any) => {
     try {
         const response = await apiRequest.post("/student/research-requests", data);
+        queryClient.invalidateQueries({queryKey: ['studentResearchRequests']});
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getUnreadMessageCountService = async () => {
+    try {
+        const response = await apiRequest.get("/messages/unread-count");
         return response.data;
     } catch (error) {
         errorHandling(error);

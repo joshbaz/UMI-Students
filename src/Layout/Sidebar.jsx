@@ -2,29 +2,33 @@ import React, { useContext, useCallback } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { AuthContext } from '../store/context/AuthContext';
-import { useGetLoggedInUser } from '../store/tanstackStore/services/queries';
+import { useGetLoggedInUser, useGetUnreadMessageCount } from '../store/tanstackStore/services/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const mainNavItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: 'mdi:view-dashboard', color: 'text-[#23398B]' },
-  { name: 'My Profile', path: '/profile', icon: 'mdi:account', color: 'text-gray-400' },
-  { name: 'Research Requests', path: '/requests', icon: 'mdi:calendar-check', color: 'text-gray-400' },
-  { name: 'Direct Messages', path: '/direct-messages', icon: 'mdi:message-text', color: 'text-gray-400', badge: 20 },
-];
-const otherNavItems = [
-  { name: 'Notifications', path: '/notifications', icon: 'mdi:cube', color: 'text-gray-400' },
-  { name: 'Settings', path: '/settings', icon: 'mdi:cog', color: 'text-gray-400' },
-];
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const { data: userData } = useGetLoggedInUser();
+  const { data: unreadData } = useGetUnreadMessageCount();
   const queryClient = useQueryClient();
 
   console.log(userData)
+  
+  const unreadCount = unreadData?.unreadCount || 0;
+
+  const mainNavItems = [
+    { name: 'Dashboard', path: '/dashboard', icon: 'mdi:view-dashboard', color: 'text-[#23398B]' },
+    { name: 'My Profile', path: '/profile', icon: 'mdi:account', color: 'text-gray-400' },
+    { name: 'Research Requests', path: '/requests', icon: 'mdi:calendar-check', color: 'text-gray-400' },
+    { name: 'Direct Messages', path: '/direct-messages', icon: 'mdi:message-text', color: 'text-gray-400', badge: unreadCount },
+  ];
+  const otherNavItems = [
+    { name: 'Notifications', path: '/notifications', icon: 'mdi:cube', color: 'text-gray-400' },
+    { name: 'Settings', path: '/settings', icon: 'mdi:cog', color: 'text-gray-400' },
+  ];
+
   const handleLogout = useCallback(() => {
     logout();
     // Reset all queries in the query client
@@ -83,7 +87,7 @@ const Sidebar = () => {
                   className={`text-xl ${isActive ? 'text-[#23398B]' : 'text-gray-400'}`}
                 />
                 <span>{item.name}</span>
-                {item.badge && (
+                {item.badge > 0 && (
                   <span className="ml-auto border border-[#7DD3FC] text-[#0369A1] text-xs px-2 py-0.5 rounded-full font-semibold bg-white">{item.badge}</span>
                 )}
               </NavLink>

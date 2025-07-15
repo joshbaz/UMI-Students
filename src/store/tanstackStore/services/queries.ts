@@ -15,6 +15,7 @@ import {
   getStudentBooksService,
   getStudentResearchRequestsService,
   createStudentResearchRequestService,
+  getUnreadMessageCountService,
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -176,5 +177,16 @@ export const useCreateStudentResearchRequest = () => {
       // Optionally handle error
       console.error('Failed to create research request:', error);
     },
+  });
+};
+
+// --- MESSAGING ---
+
+export const useGetUnreadMessageCount = () => {
+  return useQuery({
+    queryKey: ['unreadMessageCount'],
+    queryFn: getUnreadMessageCountService,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds
   });
 }; 
