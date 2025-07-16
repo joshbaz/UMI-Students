@@ -155,4 +155,35 @@ export const getUnreadMessageCountService = async () => {
     } catch (error) {
         errorHandling(error);
     }
+};
+
+// ********** EVALUATION SERVICES **********
+
+export const getAvailableEvaluationsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/evaluations/available");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const submitStudentEvaluationService = async (evaluationData: any) => {
+    try {
+        const response = await apiRequest.post("/student/evaluations", evaluationData);
+        queryClient.invalidateQueries({queryKey: ['availableEvaluations']});
+        queryClient.invalidateQueries({queryKey: ['studentEvaluations']});
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentEvaluationsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/evaluations");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
 }; 

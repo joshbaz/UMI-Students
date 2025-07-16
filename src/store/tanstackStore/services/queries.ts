@@ -16,6 +16,9 @@ import {
   getStudentResearchRequestsService,
   createStudentResearchRequestService,
   getUnreadMessageCountService,
+  getAvailableEvaluationsService,
+  submitStudentEvaluationService,
+  getStudentEvaluationsService,
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -176,6 +179,35 @@ export const useCreateStudentResearchRequest = () => {
     onError: (error) => {
       // Optionally handle error
       console.error('Failed to create research request:', error);
+    },
+  });
+};
+
+// --- EVALUATIONS ---
+
+export const useGetAvailableEvaluations = () => {
+  return useQuery({
+    queryKey: ['availableEvaluations'],
+    queryFn: getAvailableEvaluationsService,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
+};
+
+export const useGetStudentEvaluations = () => {
+  return useQuery({
+    queryKey: ['studentEvaluations'],
+    queryFn: getStudentEvaluationsService,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useSubmitStudentEvaluation = () => {
+  return useMutation({
+    mutationFn: submitStudentEvaluationService,
+    onSuccess: () => {
+      // Invalidate and refetch evaluations after submission
+      queryClient.invalidateQueries({ queryKey: ['availableEvaluations'] });
+      queryClient.invalidateQueries({ queryKey: ['studentEvaluations'] });
     },
   });
 };
