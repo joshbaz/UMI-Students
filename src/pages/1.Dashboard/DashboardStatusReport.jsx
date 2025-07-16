@@ -1,48 +1,94 @@
-import React from 'react'
+import React from 'react';
+import { useGetStudentProfile } from '../../store/tanstackStore/services/queries';
+import { Icon } from '@iconify/react';
 
 const DashboardStatusReport = () => {
+  const { data: profileData, isLoading: profileLoading, error: profileError } = useGetStudentProfile();
+
+  if (profileLoading) {
+    return (
+      <div className="">
+        <div className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Status Report</div>
+        <div className="animate-pulse space-y-3">
+          <div className="h-20 bg-gray-200 rounded-lg"></div>
+          <div className="h-20 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileError || !profileData?.student) {
+    return (
+      <div className="">
+        <div className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Status Report</div>
+        <div className="text-center text-gray-500 py-4">
+          Unable to load status information
+        </div>
+      </div>
+    );
+  }
+
+  const student = profileData.student;
+  
+  // Get current and previous status from the statuses array
+  const statuses = student?.statuses || [];
+  const currentStatus = statuses[0]; // Most recent status
+  const previousStatus = statuses[1]; // Second most recent status
+
   return (
     <div className="">
       <div className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Status Report</div>
-      {/* Current Status */}
-      <div className="mb-3 md:mb-4">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-base md:text-lg font-semibold text-gray-700">Current Status</span>
-          <span className="px-3 py-1 border border-teal-600 text-teal-700 rounded-lg text-xs md:text-sm font-medium bg-teal-50">Normal Progress</span>
+      
+      {/* Current and Previous Status Display */}
+      <div className="space-y-3">
+        {/* Current Status */}
+        <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-2 mb-1">
+            <Icon icon="mdi:account-school" className="w-5 h-5 text-blue-600" />
+            <span className="font-semibold text-blue-800">Current Status</span>
+          </div>
+          <div className="text-lg font-bold text-blue-900">
+            {currentStatus?.definition?.name || 'No Status Set'}
+          </div>
+          {currentStatus?.startDate && (
+            <div className="text-sm text-blue-600 mt-1">
+              Since {new Date(currentStatus.startDate).toLocaleDateString()}
+            </div>
+          )}
         </div>
-        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-          <span>Assigned On</span>
-          <span>Assigned By</span>
-        </div>
-        <div className="flex items-center justify-between text-xs md:text-sm">
-          <span className="text-gray-700">15:23:42PM</span>
-          <span className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded-full bg-purple-400 flex items-center justify-center text-white font-bold text-xs">T</span>
-            <span className="text-indigo-800 font-medium">Tumusiiime Mugisa</span>
-          </span>
-        </div>
-      </div>
-      <div className="border-t border-gray-200 my-2 md:my-3"></div>
-      {/* Previous Status */}
-      <div>
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-base md:text-lg font-semibold text-gray-400">Previous Status</span>
-          <span className="px-3 py-1 border border-gray-400 text-gray-500 rounded-lg text-xs md:text-sm font-medium bg-gray-50">Workshop</span>
-        </div>
-        <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
-          <span>Assigned On</span>
-          <span>Assigned By</span>
-        </div>
-        <div className="flex items-center justify-between text-xs md:text-sm">
-          <span className="text-gray-400">15:23:42PM</span>
-          <span className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded-full bg-purple-400 flex items-center justify-center text-white font-bold text-xs">T</span>
-            <span className="text-indigo-800 font-medium">Tumusiiime Mugisa</span>
-          </span>
-        </div>
+
+        {/* Previous Status */}
+        {previousStatus && (
+          <div className="p-3 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg border border-gray-200">
+            <div className="flex items-center gap-2 mb-1">
+              <Icon icon="mdi:history" className="w-5 h-5 text-gray-600" />
+              <span className="font-semibold text-gray-700">Previous Status</span>
+            </div>
+            <div className="text-lg font-bold text-gray-800">
+              {previousStatus.definition?.name}
+            </div>
+            <div className="text-sm text-gray-600 mt-1">
+              {previousStatus.startDate && previousStatus.endDate 
+                ? `${new Date(previousStatus.startDate).toLocaleDateString()} - ${new Date(previousStatus.endDate).toLocaleDateString()}`
+                : previousStatus.startDate 
+                  ? `Started ${new Date(previousStatus.startDate).toLocaleDateString()}`
+                  : 'Dates unavailable'
+              }
+            </div>
+          </div>
+        )}
+
+        {/* No Previous Status Message */}
+        {!previousStatus && currentStatus && (
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-center">
+            <div className="text-sm text-gray-500">
+              No previous status available
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardStatusReport
+export default DashboardStatusReport;
