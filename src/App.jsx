@@ -12,6 +12,7 @@ import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OrdinaryRoutes from "./routes/OrdinaryRoutes";
 import ResearchRequests from "./pages/3.ResearchRequests/ResearchRequests";
 import SubmitResearchRequest from "./pages/3.ResearchRequests/SubmitResearchRequest";
+import Evaluations from "./pages/7.Evaluations/Evaluations";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/profile" element={<MyProfile />} />
           <Route path="/requests" element={<ResearchRequests />} />
           <Route path="/requests/submit" element={<SubmitResearchRequest />} />
+          <Route path="/evaluations" element={<Evaluations />} />
           <Route path="/direct-messages" element={<DirectMessages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />
