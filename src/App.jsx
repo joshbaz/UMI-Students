@@ -14,6 +14,9 @@ import ResearchRequests from "./pages/3.ResearchRequests/ResearchRequests";
 import SubmitResearchRequest from "./pages/3.ResearchRequests/SubmitResearchRequest";
 import Evaluations from "./pages/7.Evaluations/Evaluations";
 
+// PWA Component
+import PWAInstaller from "./components/PWAInstaller";
+
 function App() {
   return (
     <Router>
@@ -44,6 +47,9 @@ function App() {
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      
+      {/* PWA Installer - shows on all pages including login */}
+      <PWAInstaller />
     </Router>
   );
 }
