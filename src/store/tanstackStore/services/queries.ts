@@ -19,6 +19,7 @@ import {
   getAvailableEvaluationsService,
   submitStudentEvaluationService,
   getStudentEvaluationsService,
+  getStudentDocumentsService,
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -220,5 +221,19 @@ export const useGetUnreadMessageCount = () => {
     queryFn: getUnreadMessageCountService,
     staleTime: 30 * 1000, // 30 seconds
     refetchInterval: 30 * 1000, // Refetch every 30 seconds
+  });
+};
+
+// --- DOCUMENTS ---
+
+export const useGetStudentDocuments = () => {
+  return useQuery({
+    queryKey: ['studentDocuments'],
+    queryFn: getStudentDocumentsService,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Always consider data stale to ensure fresh data
+    refetchInterval: false, // Don't auto-refetch, rely on manual invalidation
+    refetchOnReconnect: true
   });
 }; 

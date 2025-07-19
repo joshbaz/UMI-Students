@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import Sidebar from './Sidebar';
 
 const Layout = () => {
@@ -14,6 +15,14 @@ const Layout = () => {
           <Outlet />
         </div>
       </div>
+      
+      {/* Toast Notifications */}
+      <Toaster 
+        position="top-right"
+        richColors
+        closeButton
+        duration={4000}
+      />
     </div>
   );
 };

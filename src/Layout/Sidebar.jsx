@@ -22,6 +22,7 @@ const Sidebar = () => {
     { name: 'Dashboard', path: '/dashboard', icon: 'mdi:view-dashboard', color: 'text-[#23398B]' },
     { name: 'My Profile', path: '/profile', icon: 'mdi:account', color: 'text-gray-400' },
     { name: 'Research Requests', path: '/requests', icon: 'mdi:calendar-check', color: 'text-gray-400' },
+    { name: 'Documents', path: '/documents', icon: 'mdi:file-document', color: 'text-gray-400' },
     { name: 'Evaluations', path: '/evaluations', icon: 'mdi:clipboard-list', color: 'text-gray-400' },
     { name: 'Direct Messages', path: '/direct-messages', icon: 'mdi:message-text', color: 'text-gray-400', badge: unreadCount },
   ];

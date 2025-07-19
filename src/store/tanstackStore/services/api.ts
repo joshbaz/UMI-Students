@@ -186,4 +186,57 @@ export const getStudentEvaluationsService = async () => {
     } catch (error) {
         errorHandling(error);
     }
+};
+
+// ********** DOCUMENT MANAGEMENT SERVICES **********
+
+export const uploadDocumentService = async (formData: FormData) => {
+    try {
+        const response = await apiRequest.post("/student/documents", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentDocumentsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/documents");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const downloadDocumentService = async ({ documentId, filename }: { documentId: string; filename: string }) => {
+    try {
+        const response = await apiRequest.get(`/student/documents/${documentId}/download`, {
+            responseType: 'blob'
+        });
+        return response; // Return the full response instead of just response.data
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const deleteDocumentService = async (documentId: string) => {
+    try {
+        const response = await apiRequest.delete(`/student/documents/${documentId}`);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentSupervisorsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/supervisors-for-messaging");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
 }; 

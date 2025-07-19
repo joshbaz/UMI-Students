@@ -13,6 +13,7 @@ import OrdinaryRoutes from "./routes/OrdinaryRoutes";
 import ResearchRequests from "./pages/3.ResearchRequests/ResearchRequests";
 import SubmitResearchRequest from "./pages/3.ResearchRequests/SubmitResearchRequest";
 import Evaluations from "./pages/7.Evaluations/Evaluations";
+import Documents from "./pages/8.Documents/Documents";
 
 // PWA Component
 import PWAInstaller from "./components/PWAInstaller";
@@ -35,6 +36,7 @@ function App() {
           <Route path="/requests" element={<ResearchRequests />} />
           <Route path="/requests/submit" element={<SubmitResearchRequest />} />
           <Route path="/evaluations" element={<Evaluations />} />
+          <Route path="/documents" element={<Documents />} />
           <Route path="/direct-messages" element={<DirectMessages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/settings" element={<Settings />} />

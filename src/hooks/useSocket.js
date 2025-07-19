@@ -16,8 +16,13 @@ export function useSocket(onMessage, onUserStatusChange, onTyping) {
   useEffect(() => {
     const token = localStorage.getItem('umi_student_auth_token') || localStorage.getItem('token');
     console.log('Initializing socket connection with token:', !!token);
-    if (!token) return;
+    console.log('Socket URL:', SOCKET_URL);
+    if (!token) {
+      console.log('No token found, skipping socket connection');
+      return;
+    }
 
+    console.log('Creating socket connection...');
     // Connect with JWT
     const socket = io(SOCKET_URL, {
       auth: { token },
@@ -26,6 +31,10 @@ export function useSocket(onMessage, onUserStatusChange, onTyping) {
       reconnectionDelay: 1000,
     });
     socketRef.current = socket;
+    
+    // Make socket available globally for debugging
+    window.socket = socket;
+    console.log('Socket created and assigned to window.socket');
 
     // Event handlers that use the latest callbacks
     const handleMessage = (data) => {
@@ -55,18 +64,41 @@ export function useSocket(onMessage, onUserStatusChange, onTyping) {
     socket.on('user_status_changed', handleUserStatusChange);
     socket.on('online_users_updated', handleUserStatusChange);
     socket.on('user_typing', handleTyping);
+    socket.on('document_upload_success', (data) => {
+      console.log('Document upload success event received:', data);
+      console.log('Calling handleMessage with data:', data);
+      handleMessage(data);
+    });
+    socket.on('new_document_uploaded', (data) => {
+      console.log('New document uploaded event received:', data);
+      console.log('Calling handleMessage with data:', data);
+      handleMessage(data);
+    });
 
     // Connection event handlers
     socket.on('connect', () => {
       console.log('Socket connected:', socket.id);
+      // Update global socket reference
+      window.socket = socket;
     });
 
     socket.on('disconnect', (reason) => {
       console.log('Socket disconnected:', reason);
+      // Clear global socket reference
+      window.socket = null;
     });
 
     socket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
+      // Clear global socket reference
+      window.socket = null;
+    });
+
+    // Add error event handler
+    socket.on('error', (error) => {
+      console.error('Socket error:', error);
+      // Clear global socket reference
+      window.socket = null;
     });
 
     // Cleanup on unmount
@@ -77,11 +109,16 @@ export function useSocket(onMessage, onUserStatusChange, onTyping) {
       socket.off('user_status_changed', handleUserStatusChange);
       socket.off('online_users_updated', handleUserStatusChange);
       socket.off('user_typing', handleTyping);
+      socket.off('document_upload_success', handleMessage);
+      socket.off('new_document_uploaded', handleMessage);
       socket.off('connect');
       socket.off('disconnect');
       socket.off('connect_error');
+      socket.off('error');
       socket.disconnect();
       socketRef.current = null;
+      // Clear global socket reference
+      window.socket = null;
     };
   }, []); // Empty dependency array to prevent reconnection loops
 
