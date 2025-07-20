@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const apiRequest = axios.create({
-  baseURL:  'http://localhost:5000/api/v1',
-  // baseURL:  'http://drims.alero.digital/api/v1',
+  // baseURL:  'http://localhost:5000/api/v1',
+  baseURL:  'http://drims.alero.digital/api/v1',
   timeout: 10000,
 });
 

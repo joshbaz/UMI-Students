@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:5000';
-// const SOCKET_URL = 'http://drims.alero.digital';
+// const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = 'http://drims.alero.digital';
 
 export function useSocket(onMessage, onUserStatusChange, onTyping) {
   const socketRef = useRef(null);
