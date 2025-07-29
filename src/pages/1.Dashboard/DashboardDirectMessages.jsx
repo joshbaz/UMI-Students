@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { format, isToday, isYesterday } from 'date-fns';
 import { useGetUnreadMessageCount } from '../../store/tanstackStore/services/queries';
 
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
-const API_URL = import.meta.env.VITE_API_URL || 'https://drims.alero.digital/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+// const API_URL = import.meta.env.VITE_API_URL || 'https://drims.alero.digital/api/v1';
 
 const DashboardDirectMessages = () => {
   const navigate = useNavigate();

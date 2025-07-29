@@ -20,6 +20,10 @@ import {
   submitStudentEvaluationService,
   getStudentEvaluationsService,
   getStudentDocumentsService,
+  getAvailableResearchClinicDaysService,
+  bookResearchClinicSessionService,
+  getStudentResearchClinicBookingsService,
+  cancelResearchClinicBookingService,
 } from './api';
 
 /* ********** STUDENT QUERIES ********** */
@@ -235,5 +239,45 @@ export const useGetStudentDocuments = () => {
     staleTime: 0, // Always consider data stale to ensure fresh data
     refetchInterval: false, // Don't auto-refetch, rely on manual invalidation
     refetchOnReconnect: true
+  });
+}; 
+
+/* ********** RESEARCH CLINIC ********** */
+
+export const useGetAvailableResearchClinicDays = () => {
+  return useQuery({
+    queryKey: ['availableResearchClinicDays'],
+    queryFn: getAvailableResearchClinicDaysService,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: false,
+  });
+};
+
+export const useGetStudentResearchClinicBookings = () => {
+  return useQuery({
+    queryKey: ['studentResearchClinicBookings'],
+    queryFn: getStudentResearchClinicBookingsService,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: false,
+  });
+};
+
+export const useBookResearchClinicSession = () => {
+  return useMutation({
+    mutationFn: bookResearchClinicSessionService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['availableResearchClinicDays'] });
+      queryClient.invalidateQueries({ queryKey: ['studentResearchClinicBookings'] });
+    },
+  });
+};
+
+export const useCancelResearchClinicBooking = () => {
+  return useMutation({
+    mutationFn: cancelResearchClinicBookingService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['availableResearchClinicDays'] });
+      queryClient.invalidateQueries({ queryKey: ['studentResearchClinicBookings'] });
+    },
   });
 }; 

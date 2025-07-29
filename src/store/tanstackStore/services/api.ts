@@ -239,4 +239,42 @@ export const getStudentSupervisorsService = async () => {
     } catch (error) {
         errorHandling(error);
     }
+};
+
+/* ********** RESEARCH CLINIC SERVICES ********** */
+
+export const getAvailableResearchClinicDaysService = async () => {
+    try {
+        const response = await apiRequest.get("/student/research-clinic-days");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const bookResearchClinicSessionService = async (data: any) => {
+    try {
+        const response = await apiRequest.post("/student/research-clinic-bookings", data);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const getStudentResearchClinicBookingsService = async () => {
+    try {
+        const response = await apiRequest.get("/student/research-clinic-bookings");
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
+};
+
+export const cancelResearchClinicBookingService = async (bookingId: string) => {
+    try {
+        const response = await apiRequest.put(`/student/research-clinic-bookings/${bookingId}/cancel`);
+        return response.data;
+    } catch (error) {
+        errorHandling(error);
+    }
 }; 
