@@ -56,23 +56,23 @@ const Dashboard = () => {
       {/* Two columns below timeline */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-2">
         {/* Left column: Academic Progress + Direct Messages */}
-        <div className="flex flex-col gap-4 h-full w-full">
-          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[300px] w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 w-full">
             <DashboardStatusReport />
           </div>
-          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[220px] w-full">
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 w-full">
             <DashboardDirectMessages />
           </div>
         </div>
         {/* Right column: Recent Research Requests + Recent Documents */}
-        <div className="flex flex-col gap-4 h-full w-full">
-          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[300px] flex flex-col w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
             <DashboardRecentResearchRequests />
           </div>
-          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[200px] max-h-[320px] flex flex-col w-full">
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
             <DashboardRecentDocuments />
           </div>
-          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[200px] max-h-[320px] flex flex-col w-full">
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
             <DashboardGuidelines />
           </div>
         </div>
@@ -80,10 +80,10 @@ const Dashboard = () => {
 
       {/* Upcoming Appointments & Research Clinic */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-2">
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[220px] w-full">
+        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
           <DashboardUpcomingAppointments />
         </div>
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 h-full min-h-[220px] w-full">
+        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
           <DashboardUpcomingResearchClinic />
         </div>
       </div>
