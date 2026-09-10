@@ -262,7 +262,7 @@ const DirectMessages = () => {
         <body>
           <div class="header">
             <h1>Direct Message Conversation</h1>
-            <div class="subtitle">UMI Student Portal - Printed on ${printDate}</div>
+            <div class="subtitle">DRIMS Student Portal - Printed on ${printDate}</div>
           </div>
           
           <div class="conversation-info">
@@ -302,7 +302,7 @@ const DirectMessages = () => {
           </div>
           
           <div class="footer">
-            <p>This conversation was exported from UMI Student Portal</p>
+            <p>This conversation was exported from DRIMS Student Portal</p>
             <p>For any questions, please contact your supervisor or the system administrator</p>
           </div>
         </body>
