@@ -55,7 +55,7 @@ const Dashboard = () => {
       
       {/* Two columns below timeline */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-2">
-        {/* Left column: Academic Progress + Direct Messages */}
+        {/* Left column: Academic Progress + Direct Messages + Upcoming Appointments + Guidelines */}
         <div className="flex flex-col gap-4 w-full">
           <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 w-full">
             <DashboardStatusReport />
@@ -63,8 +63,14 @@ const Dashboard = () => {
           <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 w-full">
             <DashboardDirectMessages />
           </div>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
+            <DashboardUpcomingAppointments />
+          </div>
+          <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
+            <DashboardGuidelines />
+          </div>
         </div>
-        {/* Right column: Recent Research Requests + Recent Documents */}
+        {/* Right column: Recent Research Requests + Recent Documents + Research Clinic */}
         <div className="flex flex-col gap-4 w-full">
           <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
             <DashboardRecentResearchRequests />
@@ -73,18 +79,8 @@ const Dashboard = () => {
             <DashboardRecentDocuments />
           </div>
           <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
-            <DashboardGuidelines />
+            <DashboardUpcomingResearchClinic />
           </div>
-        </div>
-      </div>
-
-      {/* Upcoming Appointments & Research Clinic */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-2">
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
-          <DashboardUpcomingAppointments />
-        </div>
-        <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 flex flex-col w-full">
-          <DashboardUpcomingResearchClinic />
         </div>
       </div>
 

@@ -50,9 +50,10 @@ const DashboardUpcomingAppointments = () => {
           </button>
           <button
             onClick={() => navigate('/appointments')}
-            className="px-3 md:px-4 py-1.5 bg-[#25369B] text-white text-sm font-medium rounded-md hover:bg-[#1d285c] transition-colors"
+            className="px-3 py-1.5 bg-[#25369B] text-white text-sm font-medium rounded-md hover:bg-[#1d285c] transition-colors"
           >
-            View More
+            <span className="md:hidden">View</span>
+            <span className="hidden md:inline">View More</span>
           </button>
         </div>
       </div>
